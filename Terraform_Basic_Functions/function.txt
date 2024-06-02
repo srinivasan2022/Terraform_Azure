@@ -1,0 +1,101 @@
+Terraform Functions :
+
+1.min(number1 ,number2 , ...)
+
+> min(10,12,8) --> 8
+
+2.max(number1 ,number2 , ...)
+
+> max(10,12,8) --> 12
+
+3.pow(base , exponent)
+
+> pow(2,3) --> 8
+
+4.lower(string)
+
+> lower("ABCD") --> abcd
+
+5.upper(string)
+
+> upper("abcd") --> ABCD
+
+6.split(delimiter , string)
+
+> split(" ", "abc def) --> tolist(["abc","def"]) --> It returns List[]
+
+7.join(delimiter , List)
+
+> join("-", ["apple","banana","orange"]) --> apple-banana-orange --> It returns String ""
+
+8.replace(string , substring , replacement)
+
+> replace("password","a","@") --> p@ssword --> It returns String ""
+
+9.flatten(list)
+
+> flatten([[1,2,3],[4,5],[6,7,8],[9,10]]) --> [1,2,3,4,5,6,7,8,9,10]
+
+10.for 
+
+ 10.1 [for item in list : transformation]
+
+ >[for no in [1,2,3,4,5] : "numbers :${no}"] 
+
+-->[
+  "numbers :1",
+  "numbers :2",
+  "numbers :3",
+  "numbers :4",
+  "numbers :5",
+  ]
+
+ 10.2 {for key , value in map : key => transformation}
+
+ >{for k , v in map : k => transformation}
+
+11. keys(map) and values(map)
+
+mymap= {name : "xyz"}
+
+> keys(mymap) --> name
+
+> values(mymap) --> "xyz"
+
+11.element(List , index)
+
+ my_list = ["apple" , "banana" , "orange"]
+
+> element(my_list , 0) --> apple
+> element(my_list , 1) --> banana
+
+12.cidrsubnet(iprange , newbits , netnum)
+
+# iprange --> vnet_address_space
+# newbits --> /24 or /32... Calculate (10.0.0.0/16 , 8 , 10) --> 16+8 = 24
+# netnum --> subnet_no ... (10.0.0.0/16 , 8 , 10) --> 10.0.10.0/24
+
+This function is used to allocate subnet address_prefix from vnet address_space
+
+>cidrsubnet(10.0.0.0/16 , 8 , 10) --> 10.0.10.0/24
+
+13.cidrsubnets(iprange , newbits , newbits ,...)
+
+ You want to create 1 Vnet and 4 Subnets 
+
+ vnet_address_space = "10.0.0.0/16"
+ 
+ subnet1 , subnet2 , subnet3 ,subnet4 address_prefix = "10.0.1.0/24" , "10.0.1.0/24" ,"10.0.1.0/24" , "10.0.1.0/24"
+
+ cidrsubnets("10.0.0.0/16" , 8 , 8 , 8, 8) --> tolist[("10.0.1.0/24" , "10.0.1.0/24" ,"10.0.1.0/24" , "10.0.1.0/24")]
+
+14.cidrnetmask(prefix)
+
+> cidrnetmask("10.0.0.0/16") --> "255.255.0.0"  --> 16 --> First 2 ranges are blocked
+> cidrnetmask("10.0.0.0/15") --> "255.254.0.0"  --> 15 --> 1 range is blocked and 1(16-15) bit is available in 2nd range -->(2^1=2) --> 256-2=254 
+> cidrnetmask("10.0.0.0/14") --> "255.252.0.0"  --> 14 --> 1 range is blocked and 2(16-14) bits are available in 2nd range -->(2^2=4) --> 256-4-252
+> cidrnetmask("10.0.0.0/13") --> "255.248.0.0"  --> 13 --> 1 range is blocked and 3(16-13) bits are available in 2nd range --> (2^3=8) --> 256-8=248
+
+10.0.0.0 --> (8.8.8.8) --> 32 bits
+
+10.0.0.0/16 --> (256,256,0,0) --> 65,536 IP addresses are available.
